@@ -22,6 +22,22 @@ class DataIngesion:
 
             logging.info('data read initiated ..........')
             df = pd.read_csv('notebook/data/train.csv')
+            df = df[[
+                'MSSubClass', 'LotFrontage', 'LotArea', 'OverallQual', 'OverallCond',
+                'YearBuilt', 'YearRemodAdd', 'MasVnrArea', 'BsmtFinSF1', 'BsmtFinSF2',
+                'BsmtUnfSF', 'TotalBsmtSF', '1stFlrSF', '2ndFlrSF', 'LowQualFinSF',
+                'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath',
+                'BedroomAbvGr', 'KitchenAbvGr', 'TotRmsAbvGrd', 'Fireplaces','GarageYrBlt', 
+                'GarageCars', 'GarageArea', 'WoodDeckSF', 'OpenPorchSF','EnclosedPorch', 
+                '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal','MoSold', 'YrSold', 
+                'MSZoning', 'Street', 'LotShape', 'LandContour', 'Utilities','LotConfig', 
+                'LandSlope', 'Neighborhood', 'Condition1', 'Condition2','BldgType', 'HouseStyle', 
+                'RoofStyle', 'RoofMatl', 'Exterior1st','Exterior2nd', 'ExterQual', 'ExterCond', 
+                'Foundation', 'BsmtQual','BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 
+                'Heating','HeatingQC', 'CentralAir', 'Electrical', 'KitchenQual', 'Functional',
+                'GarageType', 'GarageFinish', 'GarageQual', 'GarageCond', 'PavedDrive','SaleType', 
+                'SaleCondition', 'SalePrice'
+            ]]
             logging.info('data read completed ..........')
 
             logging.info('train test split initiated ..........')
@@ -35,6 +51,14 @@ class DataIngesion:
             test.to_csv(self.data_path.test_data_path, header=True, index=True)
             logging.info('save train test split completed ..........')
 
+            return (
+                self.data_path.train_data_path,
+                self.data_path.test_data_path
+            )
+
         except Exception as e:
             raise CustomException(e, sys)
         
+if __name__ == '__main__':
+    obj = DataIngesion()
+    obj.initiate_data_ingesion()
