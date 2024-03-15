@@ -13,7 +13,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from src.utils import save_object
 from dataclasses import dataclass
+
 from src.components.data_ingesion import DataIngesion
+from src.components.data_trainer import ModelTrainer
+
 from scipy.sparse import hstack
 
 @dataclass
@@ -104,9 +107,8 @@ class DataTransformer:
             )
 
             return (
-                train_arr,
-                test_arr,
-                self.data_transformer_config.preprocesor_obj_file_path
+                train_arr.toarray(),
+                test_arr.toarray()
             )
         except Exception as e:
             raise CustomException(e, sys)
@@ -116,5 +118,8 @@ if __name__ == '__main__':
     train_data_path, test_data_path = obj.initiate_data_ingesion()
 
     transformer_obj = DataTransformer()
-    transformer_obj.initiate_data_transformer(train_data_path, test_data_path)
+    train_arr, test_arr = transformer_obj.initiate_data_transformer(train_data_path, test_data_path)
+
+    trainer_obj = ModelTrainer()
+    trained_model_path = trainer_obj.initiate_model_trainer(train_arr, test_arr)
 
