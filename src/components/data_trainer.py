@@ -40,7 +40,6 @@ class ModelTrainer:
             models = {
                 'Linear Regression': LinearRegression(),
                 'Decision Tree': DecisionTreeRegressor(),
-                'SVM': SVR(),
                 'Ada Boost': AdaBoostRegressor(),
                 'Gradient Boost': GradientBoostingRegressor(),
                 'Random Forest': RandomForestRegressor(),
@@ -49,10 +48,55 @@ class ModelTrainer:
                 'xgboost': XGBRegressor()
             }
 
+            model_params = {
+                "Linear Regression":{},
+                "Decision Tree": {
+                    'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                    # 'splitter':['best','random'],
+                    # 'max_features':['sqrt','log2'],
+                },
+                "Ada Boost":{
+                    'learning_rate':[.1,.01,0.5,.001],
+                    # 'loss':['linear','square','exponential'],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Gradient Boost":{
+                    # 'loss':['squared_error', 'huber', 'absolute_error', 'quantile'],
+                    'learning_rate':[.1,.01,.05,.001],
+                    'subsample':[0.6,0.7,0.75,0.8,0.85,0.9],
+                    # 'criterion':['squared_error', 'friedman_mse'],
+                    # 'max_features':['auto','sqrt','log2'],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                "Random Forest":{
+                    # 'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
+                 
+                    # 'max_features':['sqrt','log2',None],
+                    'n_estimators': [8,16,32,64,128,256]
+                },
+                'KNeighbors': {
+                    'n_neighbors': [3, 5, 7, 9],  # Number of neighbors to use
+                    'weights': ['uniform', 'distance'],  # Weight function used in prediction
+                    'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],  # Algorithm used to compute the nearest neighbors
+                    #'leaf_size': [30, 40, 50],  # Leaf size passed to BallTree or KDTree
+                    #'p': [1, 2],  # Power parameter for the Minkowski metric
+                },
+                "Cat Boost":{
+                    'depth': [6,8,10],
+                    'learning_rate': [0.01, 0.05, 0.1],
+                    'iterations': [30, 50, 100]
+                },
+                "xgboost":{
+                    'learning_rate':[.1,.01,.05,.001],
+                    'n_estimators': [8,16,32,64,128,256]
+                },                
+            }
+
+
             logging.info('select best model ..........')
 
             # get models evaluation report
-            model_report:dict = evaluate_model(x_train=x_train, x_test=x_test, y_train=y_train, y_test=y_test, models=models)
+            model_report:dict = evaluate_model(x_train=x_train, x_test=x_test, y_train=y_train, y_test=y_test, models=models, params = model_params)
             
             report_df = pd.DataFrame(model_report, index=None)
             best_model_record = report_df[report_df['test accuracy'] == report_df['test accuracy'].max()]
